@@ -1,38 +1,32 @@
 import express from 'express';
+import connectDataBase from './config/dbconnect.js';
+import livro from './models/Livro.js';
+
+const connection = await connectDataBase();
+
+connection.on("error", (err) => {
+    console.error('erro de conexao', err);
+})
+
+connection.once('open', () => {
+    console.log('Conectado ao banco de dados com sucesso!');
+})
 
 const app = express();
 app.use(express.json());
-
-const carros = [
-    {
-        id: 1,
-        marca:"Toyota",
-        nome:"Supra"
-    },
-    {
-        id: 2,
-        marca:"Mazda",
-        nome:"RX7"
-    }
-];
-
-function buscarCarros(id) {
-    return carros.findIndex(carro => {
-        return carro.id === Number(id);
-    })
-}
 
 app.get("/", (req, res) => {
     res.status(200).send("Curso de nodeJS");
 });
 
-app.get("/carros", (req, res) => {
-    res.status(200).json(carros);
+app.get("/livros", async (req, res) => {
+    const listaLivros = await livro.find({});
+    res.status(200).json(listaLivros);
 });
 
-app.get("/carros/:id", (req, res) => {
-    const index = buscarCarros(req.params.id);
-    res.status(200).send(carros[index])
+app.get("/carros/:id", async (req, res) => {
+    const livroId = await livro.findById(req.params.id);
+    res.status(200).json(livroId);
     
 })
 

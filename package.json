@@ -12,8 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.18.1",
+    "install": "^0.13.0",
+    "mongodb": "5.5",
+    "mongoose": "^7.3.4",
     "nodejs-alura": "file:",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "npm": "^11.0.0"
   }
 }
