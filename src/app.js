@@ -9,7 +9,7 @@ connection.on("error", (err) => {
 })
 
 connection.once('open', () => {
-    console.log('Conectado ao banco de dados com sucesso!!');
+    console.log('Conectado ao banco de dados com sucesso!');
 })
 
 const app = express();
