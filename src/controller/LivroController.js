@@ -1,4 +1,5 @@
 import livro from '../models/Livro.js';
+import { autor } from '../models/Autor.js';
 
 class LivroController {
 
@@ -23,8 +24,11 @@ class LivroController {
 
     static async criarLivro(req, res) {
         try {
-            const novoLivro = await livro.create(req.body);
-            res.status(201).json({message:"Livro criado com sucesso!", livro: novoLivro});
+            const novoLivro = req.body;
+            const autorEncontrado = await autor.findById(novoLivro.autor);
+            const livroCopiado = {...novoLivro, autor:{...autorEncontrado._doc}};
+            const livroCriado = await livro.create(livroCopiado);
+            res.status(201).json({message:"Livro criado com sucesso!", livro: livroCriado});
         } catch (err) {
             res.status(500).json({message: `${err.message} - ERRO AO CRIAR LIVRO`})
         }
@@ -47,6 +51,16 @@ class LivroController {
             res.status(204).json({message: "Livro deletado com sucesso!"});
         } catch (err) {
             res.status(500).json({message: `${err.message} - ERRO AO DELETAR LIVRO`})
+        }
+    }
+
+    static async buscarLivrosPorEditora(req, res) {
+        const editora = req.query.editor;
+        try {
+            const livrosPorEditora = await livro.find({editor: editora});
+            res.status(200).json(livrosPorEditora);
+        } catch (err) {
+            res.status(500).json({message: `${err.message} - ERRO AO BUSCAR LIVROS POR EDITORA`});
         }
     }
 };
