@@ -11,43 +11,47 @@ class AutorController {
         }
     }
 
-    static async listarAutoresPorId(req, res) {
+    static async listarAutoresPorId(req, res, next) {
         try {
             const id = req.params.id;
-            const autorId = await autor.findById(id);
-            res.status(200).json(autorId);
+            const autorResultado = await autor.findById(id);
+            if(autorResultado !== null) {
+                res.status(200).json(autorResultado);
+            } else {
+                res.status(404).json({message: "Erro ao listar autor."});
+            }
         } catch (err) {
-            res.status(500).json({message: `${err.message} - Erro ao listar autor.`});
-        }
+            next(err);
+        } 
     }
 
-    static async criarAutor (req, res) {
+    static async criarAutor (req, res, next) {
         try {
             const autorRecebido = req.body;
             const autorCriado = await autor.create(autorRecebido);
             res.status(201).json({message: "Autor criado com sucesso!", autor: autorCriado});
         } catch (err) {
-            res.status(500).json({message: `${err.message} - Erro ao criar autor.`})
+            next(err);
         }
     }
 
-    static async atualizarAutor (req, res) {
+    static async atualizarAutor (req, res, next) {
         try {
             const id = req.params.id;
             const autorAtualizado = await autor.findByIdAndUpdate(id, req.body);
             res.status(200).json(autorAtualizado);
         } catch (err) {
-            res.status(500).json({message: `${err.message} - Erro ao atualizar dados do autor.`})
+            next(err);
         }
     }
 
-    static async deletarAutor (req, res) {
+    static async deletarAutor (req, res, next) {
         try {
             const id = req.params.id;
             await autor.findByIdAndDelete(id);
             res.status(204).json({message: "Autor deletado com sucesso!"});
         } catch (err) {
-            res.status(500).json({message: `${err.message} - Erro ao deletar autor.`})
+            next(err);
         }
     }
 }

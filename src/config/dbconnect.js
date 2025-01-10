@@ -6,4 +6,3 @@ const connectDataBase = async () => {
 };
 
 export default connectDataBase;
-
