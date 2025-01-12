@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { autor } from "../models/Autor.js";
 
 class AutorController {
@@ -21,7 +22,15 @@ class AutorController {
                 res.status(404).json({message: "Erro ao listar autor."});
             }
         } catch (err) {
+<<<<<<< HEAD
             next(err);
+=======
+            if(err instanceof mongoose.Error.CastError) {
+                res.status(400).send({message: "Dados(os) inválidos(os)."});
+            } else {
+                res.status(500).json({message: 'Erro interno de servidor.', error: err.message});
+            }
+>>>>>>> 2ac67b5efb771213ac62aadd679b6328cb3940d0
         } 
     }
 
