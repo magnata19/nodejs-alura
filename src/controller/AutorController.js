@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { autor } from "../models/Autor.js";
+import { autor } from "../models/index.js";
 import NaoEncontrado from "../erros/NaoEncontrado.js";
 
 class AutorController {
@@ -46,7 +46,11 @@ class AutorController {
         try {
             const id = req.params.id;
             const autorAtualizado = await autor.findByIdAndUpdate(id, req.body);
-            res.status(200).json(autorAtualizado);
+            if(autorAtualizado !== null) {
+                res.status(200).json(autorAtualizado);
+            } else {
+                next(new NaoEncontrado("Autor não encontrado por id."));
+            }
         } catch (err) {
             next(err);
         }
@@ -55,8 +59,12 @@ class AutorController {
     static async deletarAutor (req, res, next) {
         try {
             const id = req.params.id;
-            await autor.findByIdAndDelete(id);
-            res.status(204).json({message: "Autor deletado com sucesso!"});
+            const autorEncontrado = await autor.findByIdAndDelete(id);
+            if(autorEncontrado !== null) {
+                res.status(204).json({message: "Autor deletado com sucesso!"});
+            } else {
+                next(new NaoEncontrado("Autor não encontrado por id."));
+            }
         } catch (err) {
             next(err);
         }
