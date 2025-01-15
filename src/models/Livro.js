@@ -6,7 +6,7 @@ const livroSchema = new mongoose.Schema({
     titulo: {type: String, required: [true, "O campo título é obrigatório!"]},
     editora: {type: String, required: [true, "O campo editora é obrigatório!"],
         enum: {
-            values: ["Casa do código", "Alura"],
+            values: ["Casa do código", "Alura","java script"],
             message:"{VALUE} não é um valor válido para o campo {PATH}."
         }
     },
