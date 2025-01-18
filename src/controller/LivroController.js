@@ -3,8 +3,9 @@ import { autor, livro } from "../models/index.js";
 class LivroController {
   static async listaLivros(req, res, next) {
     try {
-      const listaLivros = await livro.find({});
-      res.status(200).json(listaLivros);
+      const buscaLivro = livro.find();
+      req.resultado = buscaLivro; 
+      next();
     } catch (err) {
       next(err);
     }
@@ -66,8 +67,12 @@ class LivroController {
   static async buscarLivroPorFiltro(req, res, next) {
     try {
       const busca = await buscaPorParametros(req.query);
-      const livrosPorEditora = await livro.find(busca);
-      res.status(200).json(livrosPorEditora);
+      if(busca !== null) {
+        const livrosPorEditora = await livro.find(busca);
+        res.status(200).json(livrosPorEditora);
+      } else {
+        res.status(200).send([]);
+      }
     } catch (err) {
       next(err);
     }
@@ -76,7 +81,7 @@ class LivroController {
 
 const buscaPorParametros = async (parametro) => {
   const { editora, titulo, minPaginas, maxPaginas, nomeAutor } = parametro;
-  const busca = {};
+  let busca = {};
   if (editora) busca.editora = { $regex: editora, $options: "i" };
   if (titulo) busca.titulo = { $regex: titulo, $options: "i" };
   if (minPaginas) busca.paginas = { $gte: minPaginas };
@@ -84,8 +89,12 @@ const buscaPorParametros = async (parametro) => {
   
   if(nomeAutor) {
     const autorEncontrado = await autor.findOne({nome: nomeAutor});
-    const autorNome = autorEncontrado._id;
-    busca.autor = autorNome;
+    if(autorEncontrado !== null) {
+      const autorNome = autorEncontrado._id;
+      busca['autor._id'] = autorNome;
+    } else {
+      busca = null;
+    }
   }
 
   return busca;
